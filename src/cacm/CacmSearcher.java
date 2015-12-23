@@ -76,9 +76,8 @@ public class CacmSearcher {
 		
 		
 		for (TestQuery q : queryList) {
-			QueryParser parser = new QueryParser("contents", new StandardAnalyzer());
 			
-			TopDocs hits = is.search(query, 10);
+			
 		}
 
 		return builder;
