@@ -69,14 +69,20 @@ public class CacmSearcher {
 		System.out.println("#queries: " + queryList.size());
 
 		StringBuilder builder = null;
-
+		
 		// TODO ab hier bitte implementieren!
 		IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(indexDir).toPath()));
 		IndexSearcher is = new IndexSearcher(reader);
 		
-		
 		for (TestQuery q : queryList) {
-			
+			QueryParser parser = new QueryParser("content", new StandardAnalyzer());
+			QueryParser parser2 = new QueryParser("title", new StandardAnalyzer());
+			Query query = parser.parse(q.getText());
+			Query query2 = parser2.parse(q.getText());
+			TopDocs[] hitlist = new TopDocs[2];
+			hitlist[1] = is.search(query2, 1000);
+			hitlist[0] = is.search(query, 1000);
+			TopDocs hits = TopDocs.merge(1000, hitlist);
 			
 		}
 
