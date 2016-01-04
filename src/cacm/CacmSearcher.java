@@ -13,6 +13,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.DefaultSimilarity;
@@ -68,24 +69,42 @@ public class CacmSearcher {
 		List<TestQuery> queryList = CacmHelper.readQueries(path2queries);
 		System.out.println("#queries: " + queryList.size());
 
-		StringBuilder builder = null;
-		
+		StringBuilder builder = new StringBuilder();
+
 		// TODO ab hier bitte implementieren!
 		IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(indexDir).toPath()));
 		IndexSearcher is = new IndexSearcher(reader);
+
+		TopDocs hits = null;
 		
 		for (TestQuery q : queryList) {
-			QueryParser parser = new QueryParser("content", new StandardAnalyzer());
-			QueryParser parser2 = new QueryParser("title", new StandardAnalyzer());
+			QueryParser parser = new QueryParser("content", analyzer);
+			QueryParser parser2 = new QueryParser("title", analyzer);
 			Query query = parser.parse(q.getText());
 			Query query2 = parser2.parse(q.getText());
-			TopDocs[] hitlist = new TopDocs[2];
+			TopDocs[] hitlist;
+			if (hits != null) {
+				hitlist = new TopDocs[3];
+				hitlist[2] = hits;
+			}else{
+				hitlist = new TopDocs[2];
+			}
 			hitlist[1] = is.search(query2, 1000);
 			hitlist[0] = is.search(query, 1000);
-			TopDocs hits = TopDocs.merge(1000, hitlist);
-			
+			hits = TopDocs.merge(1000, hitlist);
+			for (ScoreDoc hit : hits.scoreDocs) {
+				if (q.getNumber() != null) {
+					builder.append(q.getNumber() + " ");
+				} else {
+					builder.append("No Number()" + " ");
+				}
+				builder.append("1" + " ");
+				builder.append(hit.doc + " ");
+				builder.append(hit.score + " ");
+				builder.append(analyzer.getVersion() + "\n");
+			}
 		}
-
+		System.out.print(builder.toString());
 		return builder;
 	}
 }
