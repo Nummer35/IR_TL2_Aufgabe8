@@ -35,7 +35,7 @@ public class CacmIndexer {
 	public IndexWriter writer;
 
 	// determines which analyzer should be used
-	public static final boolean USE_STANDARD_ANALYZER = true;
+	public static final boolean USE_STANDARD_ANALYZER = false;
 
 	// constructor
 	public CacmIndexer(String indexDir, Analyzer analyzer) throws IOException {
@@ -112,7 +112,7 @@ public class CacmIndexer {
 			while ((zeile = in.readLine()) != null) {
 				// Hier kommen jetzt die Zeilen aus dem Dokument an.
 				// Wenn das erste Zeichen ein Punkt ist, dann ist das ein
-				// Anzeichen für
+				// Anzeichen fï¿½r
 				// einen neuen Abschnitt im Dokument.
 				if (zeile.startsWith(".")) {
 					if (doc != null && currSection != null && currSection != "notImportant")

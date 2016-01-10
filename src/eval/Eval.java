@@ -26,7 +26,8 @@ public class Eval {
 	/**
 	 * Main-Methode zum Berechnen der Evaluationskennzahl.
 	 * 
-	 * @param args nicht noetig.
+	 * @param args
+	 *            nicht noetig.
 	 */
 	public static void main(String[] args) {
 
@@ -37,18 +38,17 @@ public class Eval {
 		for (String filename : filenames) {
 			// System.out.println(filename);
 			double map = evaluateMAP("./logs/" + filename, groundtruth);
-			System.out.println(filename + "\t MAP=" + Math.round(map * 1000.0)
-					/ 1000.0);
+			System.out.println(filename + "\t MAP=" + Math.round(map * 1000.0) / 1000.0);
 		}
 	}
 
 	/*
 	 * Berechnet MAP.
 	 */
-	protected static double evaluateMAP(String filename,
-			Map<String, Set<String>> groundtruth) {
+	protected static double evaluateMAP(String filename, Map<String, Set<String>> groundtruth) {
 
 		// TODO Hier bitte implementieren und korrekten Wert zurueckgeben.
+		
 		return 0D;
 	}
 

@@ -25,7 +25,7 @@ import org.apache.lucene.store.FSDirectory;
 public class CacmSearcher {
 
 	// determines which analyzer should be used
-	public static final boolean USE_STANDARD_ANALYZER = false;
+	public static final boolean USE_STANDARD_ANALYZER = true;
 
 	public static String path2queries = "data/cacm.query.xml";
 
@@ -76,7 +76,7 @@ public class CacmSearcher {
 		IndexSearcher is = new IndexSearcher(reader);
 
 		TopDocs hits = null;
-		
+
 		for (TestQuery q : queryList) {
 			QueryParser parser = new QueryParser("content", analyzer);
 			QueryParser parser2 = new QueryParser("title", analyzer);
@@ -86,12 +86,13 @@ public class CacmSearcher {
 			if (hits != null) {
 				hitlist = new TopDocs[3];
 				hitlist[2] = hits;
-			}else{
+			} else {
 				hitlist = new TopDocs[2];
 			}
 			hitlist[1] = is.search(query2, 1000);
 			hitlist[0] = is.search(query, 1000);
 			hits = TopDocs.merge(1000, hitlist);
+			int rang = 0;
 			for (ScoreDoc hit : hits.scoreDocs) {
 				if (q.getNumber() != null) {
 					builder.append(q.getNumber() + " ");
@@ -100,8 +101,10 @@ public class CacmSearcher {
 				}
 				builder.append("1" + " ");
 				builder.append(hit.doc + " ");
+				rang++;
+				builder.append(rang + " ");
 				builder.append(hit.score + " ");
-				builder.append(analyzer.getVersion() + "\n");
+				builder.append(sim.toString() + "\n");
 			}
 		}
 		System.out.print(builder.toString());
