@@ -48,8 +48,31 @@ public class Eval {
 	protected static double evaluateMAP(String filename, Map<String, Set<String>> groundtruth) {
 
 		// TODO Hier bitte implementieren und korrekten Wert zurueckgeben.
+		List<String> lines = null;
+		try {
+			lines = Files.readAllLines(new File(filename).toPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
-		return 0D;
+		int numberOfDocuments=1;
+		int sumPrecision = 0;
+		int sumMap = 0;
+		for(String line : lines){
+			String query = line.split(" ")[0];
+			String docId = line.split(" ")[2];
+			String rang = line.split(" ")[3];
+			if(rang == "1"){
+				//reset
+				sumMap = (sumPrecision/numberOfDocuments) + sumMap;
+				sumPrecision = 0;
+				numberOfDocuments = groundtruth.get(Integer.valueOf(query)).size();
+			}else{
+				
+			}
+		}
+		
+		return sumMap / 63;
 	}
 
 	/*
