@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,25 +55,94 @@ public class Eval {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		int numberOfDocuments=1;
-		int sumPrecision = 0;
-		int sumMap = 0;
-		for(String line : lines){
-			String query = line.split(" ")[0];
-			String docId = line.split(" ")[2];
-			String rang = line.split(" ")[3];
-			if(rang == "1"){
-				//reset
-				sumMap = (sumPrecision/numberOfDocuments) + sumMap;
-				sumPrecision = 0;
-				numberOfDocuments = groundtruth.get(Integer.valueOf(query)).size();
-			}else{
-				
+
+		List<List<String>> rankings = new ArrayList<List<String>>();
+		List<String> ranking = new ArrayList<String>();
+		for (String line : lines) {
+			if (Integer.valueOf(line.split(" ")[3]) == 1) {
+				if (!ranking.isEmpty()) {
+					rankings.add(ranking);
+				}
+				ranking = new ArrayList<String>();
+				ranking.add(line);
+			} else {
+				ranking.add(line);
 			}
 		}
-		
-		return sumMap / 63;
+		// System.out.println(rankings.size() + " Rankings im Soll gefunden");
+		// System.out.println(groundtruth.size() + " Rankings im groundtruth
+		// gefunden");
+
+		float map = 0;
+		int relevantRankings = 0;
+		for (List<String> r : rankings) {
+			int queryId = getQueryId(r);
+			// jetzt die Liste durchlaufen und relevante Dokumente suchen
+			if (!groundtruth.containsKey(queryId+""))
+				continue;
+			relevantRankings++;
+			Set<String> gtDocs = groundtruth.get(queryId+"");
+			float precision = 0;
+			int numberOfRelevantDocsFound = 0;
+			float ap = 0;
+			for (String doc : r) {
+				String docId = doc.split(" ")[2];
+				int docRang = Integer.valueOf(doc.split(" ")[3]);
+				if (gtDocs.contains(docId)) {
+					numberOfRelevantDocsFound++;
+					precision = numberOfRelevantDocsFound / docRang;
+					ap = ap + precision;
+				}
+			}
+			map = map + ap;
+		}
+		return map / relevantRankings;
+
+		// int numberOfDocuments = 1;
+		// double sumPrecision = 0;
+		// double curPrecision = 0;
+		// double sumMap = 0;
+		// int curFoundDocs = 0;
+		// boolean continueToNext1 = false;
+		// for (String line : lines) {
+		// String query = line.split(" ")[0];
+		// String docId = line.split(" ")[2];
+		// int rang = Integer.valueOf(line.split(" ")[3]);
+		// if (continueToNext1 == true && rang != 1000) {
+		// continue;
+		// } else if (continueToNext1 == true){
+		// continueToNext1 = false;
+		// continue;
+		// }
+		// if (rang == 1) {
+		// // reset
+		// sumMap = (sumPrecision / numberOfDocuments) + sumMap;
+		// sumPrecision = 0;
+		// curPrecision = 0;
+		// curFoundDocs = 0;
+		// if (groundtruth.get(query) != null) {
+		// numberOfDocuments = groundtruth.get(query).size();
+		// } else {
+		// continueToNext1 = true;
+		// continue;
+		// }
+		// }
+		// // calc Precision
+		// if (groundtruth.get(query).contains(docId)) {
+		// // ist relevant
+		// curFoundDocs++;
+		// curPrecision = curFoundDocs / rang;
+		// sumPrecision += curPrecision;
+		// }
+		// }
+
+		// return sumMap/51;
+	}
+
+	private static int getQueryId(List<String> r) {
+		if (r.isEmpty())
+			return 0;
+		return Integer.valueOf(r.get(0).split(" ")[0]);
 	}
 
 	/*

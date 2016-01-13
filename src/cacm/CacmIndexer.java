@@ -112,7 +112,7 @@ public class CacmIndexer {
 			while ((zeile = in.readLine()) != null) {
 				// Hier kommen jetzt die Zeilen aus dem Dokument an.
 				// Wenn das erste Zeichen ein Punkt ist, dann ist das ein
-				// Anzeichen f�r
+				// Anzeichen fuer
 				// einen neuen Abschnitt im Dokument.
 				if (zeile.startsWith(".")) {
 					if (doc != null && currSection != null && currSection != "notImportant")
@@ -128,7 +128,7 @@ public class CacmIndexer {
 						if (doc != null) {
 							writer.addDocument(doc);
 						}
-						sb.append(zeile.substring(3));
+						sb.append(zeile.substring(3) + " ");
 						doc = new Document();
 						currSection = ID;
 						break;
@@ -144,7 +144,7 @@ public class CacmIndexer {
 					}
 				} else {
 					if (currSection != "notImportant")
-						sb.append(zeile);
+						sb.append(zeile + " ");
 				}
 			}
 		} catch (IOException e) {

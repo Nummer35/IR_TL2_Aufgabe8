@@ -74,7 +74,7 @@ public class CacmSearcher {
 		// TODO ab hier bitte implementieren!
 		IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(indexDir).toPath()));
 		IndexSearcher is = new IndexSearcher(reader);
-
+		is.setSimilarity(sim);
 		TopDocs hits = null;
 
 		for (TestQuery q : queryList) {
