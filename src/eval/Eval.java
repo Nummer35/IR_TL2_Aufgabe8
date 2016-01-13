@@ -73,7 +73,7 @@ public class Eval {
 		// System.out.println(groundtruth.size() + " Rankings im groundtruth
 		// gefunden");
 
-		float map = 0;
+		double map = 0;
 		int relevantRankings = 0;
 		for (List<String> r : rankings) {
 			int queryId = getQueryId(r);
@@ -82,12 +82,12 @@ public class Eval {
 				continue;
 			relevantRankings++;
 			Set<String> gtDocs = groundtruth.get(queryId+"");
-			float precision = 0;
-			int numberOfRelevantDocsFound = 0;
-			float ap = 0;
+			double precision = 0;
+			double numberOfRelevantDocsFound = 0;
+			double ap = 0;
 			for (String doc : r) {
 				String docId = doc.split(" ")[2];
-				int docRang = Integer.valueOf(doc.split(" ")[3]);
+				double docRang = Integer.valueOf(doc.split(" ")[3]);
 				if (gtDocs.contains(docId)) {
 					numberOfRelevantDocsFound++;
 					precision = numberOfRelevantDocsFound / docRang;

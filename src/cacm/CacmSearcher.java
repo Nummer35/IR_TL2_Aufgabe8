@@ -25,7 +25,7 @@ import org.apache.lucene.store.FSDirectory;
 public class CacmSearcher {
 
 	// determines which analyzer should be used
-	public static final boolean USE_STANDARD_ANALYZER = true;
+	public static final boolean USE_STANDARD_ANALYZER = false;
 
 	public static String path2queries = "data/cacm.query.xml";
 
@@ -83,12 +83,12 @@ public class CacmSearcher {
 			Query query = parser.parse(q.getText());
 			Query query2 = parser2.parse(q.getText());
 			TopDocs[] hitlist;
-			if (hits != null) {
-				hitlist = new TopDocs[3];
-				hitlist[2] = hits;
-			} else {
+			//if (hits != null) {
+				//hitlist = new TopDocs[3];
+				//hitlist[2] = hits;
+			//} else {
 				hitlist = new TopDocs[2];
-			}
+			//}
 			hitlist[1] = is.search(query2, 1000);
 			hitlist[0] = is.search(query, 1000);
 			hits = TopDocs.merge(1000, hitlist);
