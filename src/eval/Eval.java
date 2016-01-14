@@ -78,20 +78,25 @@ public class Eval {
 		for (List<String> r : rankings) {
 			int queryId = getQueryId(r);
 			// jetzt die Liste durchlaufen und relevante Dokumente suchen
-			if (!groundtruth.containsKey(queryId+""))
+			if (!groundtruth.containsKey(queryId + ""))
 				continue;
 			relevantRankings++;
-			Set<String> gtDocs = groundtruth.get(queryId+"");
+			Set<String> gtDocs = groundtruth.get(queryId + "");
+			// Diese Liste beinhaltet alle bisher gesehenen relevanten
+			// DokumentIds. Das wird benötigt um dublikate zu eleminieren.
+			List<String> seenDocs = new ArrayList<String>();
 			double precision = 0;
 			double numberOfRelevantDocsFound = 0;
 			double ap = 0;
 			for (String doc : r) {
 				String docId = doc.split(" ")[2];
 				double docRang = Integer.valueOf(doc.split(" ")[3]);
-				if (gtDocs.contains(docId)) {
+				if (gtDocs.contains(docId) && !seenDocs.contains(docId)) {
+					// Die Precision nur berechnen wenn es die docId das erste mal gesehen wird.
 					numberOfRelevantDocsFound++;
 					precision = numberOfRelevantDocsFound / docRang;
 					ap = ap + precision;
+					seenDocs.add(docId);
 				}
 			}
 			map = map + ap;

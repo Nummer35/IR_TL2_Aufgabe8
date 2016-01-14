@@ -83,15 +83,18 @@ public class CacmSearcher {
 			Query query = parser.parse(q.getText());
 			Query query2 = parser2.parse(q.getText());
 			TopDocs[] hitlist;
-			//if (hits != null) {
-				//hitlist = new TopDocs[3];
-				//hitlist[2] = hits;
-			//} else {
-				hitlist = new TopDocs[2];
-			//}
+			// if (hits != null) {
+			// hitlist = new TopDocs[3];
+			// hitlist[2] = hits;
+			// } else {
+			hitlist = new TopDocs[2];
+			// }
 			hitlist[1] = is.search(query2, 1000);
 			hitlist[0] = is.search(query, 1000);
+			// Hier werden doppelte Einträge produziert. Beispiel: Query 57
+			// Dokument 3077 Analyzer: cacm-BM25(k1=1.2,b=0.75)-my.trec
 			hits = TopDocs.merge(1000, hitlist);
+
 			int rang = 0;
 			for (ScoreDoc hit : hits.scoreDocs) {
 				if (q.getNumber() != null) {

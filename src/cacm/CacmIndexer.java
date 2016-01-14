@@ -128,6 +128,9 @@ public class CacmIndexer {
 						if (doc != null) {
 							writer.addDocument(doc);
 						}
+						// Am Ende wird noch immer ein Leerzeichen angehängt, da
+						// in der Quelldatei am Ende der Zeilen immer ein
+						// Leerzeichen fehlt.
 						sb.append(zeile.substring(3) + " ");
 						doc = new Document();
 						currSection = ID;
@@ -144,6 +147,7 @@ public class CacmIndexer {
 					}
 				} else {
 					if (currSection != "notImportant")
+						// Das selbe wie oben mit den Leerzeichen
 						sb.append(zeile + " ");
 				}
 			}
