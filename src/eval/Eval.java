@@ -55,7 +55,8 @@ public class Eval {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
+		// Zuerst die 63 Rankings aus der einzelnen Datei lesen und speichern
 		List<List<String>> rankings = new ArrayList<List<String>>();
 		List<String> ranking = new ArrayList<String>();
 		for (String line : lines) {
@@ -69,17 +70,19 @@ public class Eval {
 				ranking.add(line);
 			}
 		}
-		// System.out.println(rankings.size() + " Rankings im Soll gefunden");
-		// System.out.println(groundtruth.size() + " Rankings im groundtruth
-		// gefunden");
-
+		rankings.add(ranking); // um query 63 noch hinzu zu fügen.
+		
 		double map = 0;
 		int relevantRankings = 0;
+		int notRelevantRankings = 0;
 		for (List<String> r : rankings) {
 			int queryId = getQueryId(r);
 			// jetzt die Liste durchlaufen und relevante Dokumente suchen
-			if (!groundtruth.containsKey(queryId + ""))
-				continue;
+			if (!groundtruth.containsKey(queryId + "")){
+				//System.out.println(queryId);
+				notRelevantRankings++;
+				continue;}
+			// Ein Ranking ist dann relevant wenn es auch im groundtruth vorkommt.
 			relevantRankings++;
 			Set<String> gtDocs = groundtruth.get(queryId + "");
 			// Diese Liste beinhaltet alle bisher gesehenen relevanten
@@ -88,11 +91,14 @@ public class Eval {
 			double precision = 0;
 			double numberOfRelevantDocsFound = 0;
 			double ap = 0;
+			// jetzt werden alle 1000 dokument in einem Ranking durchgegangen
+			// und der Reihenfolge nach den relevanten durchsucht.
 			for (String doc : r) {
-				String docId = doc.split(" ")[2];
+				String docId = doc.split(" ")[2]; 
 				double docRang = Integer.valueOf(doc.split(" ")[3]);
 				if (gtDocs.contains(docId) && !seenDocs.contains(docId)) {
-					// Die Precision nur berechnen wenn es die docId das erste mal gesehen wird.
+					// Die Precision nur berechnen wenn die docId das erste
+					// mal gesehen wird und diese relevant ist.
 					numberOfRelevantDocsFound++;
 					precision = numberOfRelevantDocsFound / docRang;
 					ap = ap + precision;
@@ -102,46 +108,6 @@ public class Eval {
 			map = map + ap;
 		}
 		return map / relevantRankings;
-
-		// int numberOfDocuments = 1;
-		// double sumPrecision = 0;
-		// double curPrecision = 0;
-		// double sumMap = 0;
-		// int curFoundDocs = 0;
-		// boolean continueToNext1 = false;
-		// for (String line : lines) {
-		// String query = line.split(" ")[0];
-		// String docId = line.split(" ")[2];
-		// int rang = Integer.valueOf(line.split(" ")[3]);
-		// if (continueToNext1 == true && rang != 1000) {
-		// continue;
-		// } else if (continueToNext1 == true){
-		// continueToNext1 = false;
-		// continue;
-		// }
-		// if (rang == 1) {
-		// // reset
-		// sumMap = (sumPrecision / numberOfDocuments) + sumMap;
-		// sumPrecision = 0;
-		// curPrecision = 0;
-		// curFoundDocs = 0;
-		// if (groundtruth.get(query) != null) {
-		// numberOfDocuments = groundtruth.get(query).size();
-		// } else {
-		// continueToNext1 = true;
-		// continue;
-		// }
-		// }
-		// // calc Precision
-		// if (groundtruth.get(query).contains(docId)) {
-		// // ist relevant
-		// curFoundDocs++;
-		// curPrecision = curFoundDocs / rang;
-		// sumPrecision += curPrecision;
-		// }
-		// }
-
-		// return sumMap/51;
 	}
 
 	private static int getQueryId(List<String> r) {

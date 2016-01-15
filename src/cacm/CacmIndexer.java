@@ -142,6 +142,10 @@ public class CacmIndexer {
 						currSection = CONTENT;
 						break;
 					default:
+						// alle anderen Markierungen mit '.' werden ignoriert,
+						// da in der Aufgabenstellung von diesen nicht die Rede
+						// ist.
+
 						currSection = "notImportant";
 						break;
 					}

@@ -71,24 +71,19 @@ public class CacmSearcher {
 
 		StringBuilder builder = new StringBuilder();
 
-		// TODO ab hier bitte implementieren!
 		IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(indexDir).toPath()));
 		IndexSearcher is = new IndexSearcher(reader);
 		is.setSimilarity(sim);
-		TopDocs hits = null;
 
 		for (TestQuery q : queryList) {
+
+			TopDocs hits = null;
 			QueryParser parser = new QueryParser("content", analyzer);
 			QueryParser parser2 = new QueryParser("title", analyzer);
 			Query query = parser.parse(q.getText());
 			Query query2 = parser2.parse(q.getText());
 			TopDocs[] hitlist;
-			// if (hits != null) {
-			// hitlist = new TopDocs[3];
-			// hitlist[2] = hits;
-			// } else {
 			hitlist = new TopDocs[2];
-			// }
 			hitlist[1] = is.search(query2, 1000);
 			hitlist[0] = is.search(query, 1000);
 			// Hier werden doppelte Einträge produziert. Beispiel: Query 57
