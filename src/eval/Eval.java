@@ -74,13 +74,10 @@ public class Eval {
 		
 		double map = 0;
 		int relevantRankings = 0;
-		int notRelevantRankings = 0;
 		for (List<String> r : rankings) {
 			int queryId = getQueryId(r);
 			// jetzt die Liste durchlaufen und relevante Dokumente suchen
 			if (!groundtruth.containsKey(queryId + "")){
-				//System.out.println(queryId);
-				notRelevantRankings++;
 				continue;}
 			// Ein Ranking ist dann relevant wenn es auch im groundtruth vorkommt.
 			relevantRankings++;
