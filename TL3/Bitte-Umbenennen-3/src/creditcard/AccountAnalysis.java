@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class AccountAnalysis {
@@ -34,7 +35,10 @@ public class AccountAnalysis {
 		Map<Integer, Integer> result = null;
 		
 		//TODO hier bitte implementieren
-		
+		Stream<Transaction> transactions;
+		transactions = lines.map(l -> new Transaction(l.split(";")[0], l.split(";")[1]));
+		transactions = transactions.filter(t -> t.getKey() >= 1505 && t.getKey() <= 1510 && t.getValue() >= 100);
+		result = transactions.collect(Collectors.groupingBy(Transaction::getKey, Collectors.collectingAndThen(Collectors.averagingInt(Transaction::getValue),s -> s.intValue())));
 		// close stream
 		lines.close();
 		
