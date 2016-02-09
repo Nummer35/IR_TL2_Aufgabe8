@@ -95,7 +95,8 @@ public class TextAnalysis {
 		long start = System.currentTimeMillis();
 
 		// result map
-		LinkedHashMap<String, Long> words = new LinkedHashMap<>();;
+		LinkedHashMap<String, Long> words = new LinkedHashMap<>();
+		;
 
 		// TODO hier bitte implementieren
 		List<String> list = Arrays.asList(STOP_ARRAY);
@@ -103,11 +104,9 @@ public class TextAnalysis {
 				.map(l -> l.replaceAll("[\\.\\!\\?\\;\\:\\,\"\\(\\)]", "")).filter(l -> l.length() >= 3)
 				.filter(f -> !(f.contains("[") || f.contains("]") || f.contains("--") || f.contains("/")))
 				.filter(f -> !(list.contains(f)))
-				.collect(Collectors.groupingBy(String::toString, Collectors.counting()))
-				.entrySet()
-				.stream()
+				.collect(Collectors.groupingBy(String::toString, Collectors.counting())).entrySet().stream()
 				.sorted(Collections.reverseOrder(Comparator.comparing(e -> e.getValue())))
-				.forEachOrdered(e ->words.put(e.getKey(),e.getValue()));
+				.forEachOrdered(e -> words.put(e.getKey(), e.getValue()));
 		// close stream
 		lines.close();
 
